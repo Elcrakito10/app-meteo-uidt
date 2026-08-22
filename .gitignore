@@ -1,0 +1,32 @@
+# Secrets — NE JAMAIS COMMIT
+.env
+
+# Fichiers générés (build_runner)
+*.g.dart
+*.freezed.dart
+
+# EXCEPTION : ce fichier est écrit à la main (contournement d'un bug amont
+# de retrofit_generator — voir le commentaire en tête du fichier et le
+# README pour le détail).
+!lib/services/weather_api_service.g.dart
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Android
+android/local.properties
+android/key.properties
+android/**/*.jks
+android/**/*.keystore
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# macOS
+.DS_Store
