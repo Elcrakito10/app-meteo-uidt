@@ -5,6 +5,7 @@ import '../core/exceptions.dart';
 import '../models/city.dart';
 import '../models/city_weather_result.dart';
 import '../models/weather_response.dart';
+import '../models/forecast_response.dart';
 import '../services/weather_api_service.dart';
 
 /// Couche métier au-dessus du service API : c'est ICI, et nulle part
@@ -29,6 +30,25 @@ class WeatherRepository {
       throw _mapDioException(e);
     } on AppException {
       rethrow; // ex: InvalidApiKeyException venant de AppConfig
+    } catch (_) {
+      throw const InvalidDataException();
+    }
+  }
+
+  /// Récupère les prévisions 5 jours / pas de 3h pour UNE ville. Alimente
+  /// le dashboard, les prévisions horaires/quotidiennes et le curseur
+  /// temporel de la carte météo.
+  Future<ForecastResponse> fetchForecast(City city) async {
+    try {
+      return await _apiService.getForecast(
+        lat: city.latitude,
+        lon: city.longitude,
+        apiKey: AppConfig.openWeatherApiKey,
+      );
+    } on DioException catch (e) {
+      throw _mapDioException(e);
+    } on AppException {
+      rethrow;
     } catch (_) {
       throw const InvalidDataException();
     }

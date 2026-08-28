@@ -19,7 +19,12 @@ pluginManagement {
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-    id("com.android.application") version "9.0.1" apply false
+    // AGP 9.0.1 causait une erreur de build ("only the new DSL interface
+    // will be read"). AGP redescendu à 8.9.1. Kotlin remonté à 2.3.20 car
+    // un plugin (google_maps_flutter_android) est compilé avec cette
+    // version et exige au moins ça pour être compatible (testé et validé
+    // sur appareil réel — voir historique de dépannage).
+    id("com.android.application") version "8.9.1" apply false
     id("org.jetbrains.kotlin.android") version "2.3.20" apply false
 }
 
