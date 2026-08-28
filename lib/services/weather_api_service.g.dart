@@ -1,45 +1,23 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
 part of 'weather_api_service.dart';
 
+// dart format off
+
 // **************************************************************************
-// NOTE IMPORTANTE — pourquoi ce fichier est écrit à la main
-// **************************************************************************
-//
-// Ce fichier devrait normalement être généré automatiquement par la commande
-// `dart run build_runner build` à partir des annotations Retrofit présentes
-// dans weather_api_service.dart (@RestApi, @GET, @Query).
-//
-// À la date de ce projet, le package `retrofit_generator` contient un bug
-// non résolu en amont (confirmé sur plusieurs versions du package, y compris
-// récentes) : son code interne ne gère pas une option ajoutée au package
-// `retrofit` (Parser.DartMappable), ce qui fait planter la génération avant
-// même d'atteindre notre code — quelle que soit la combinaison de versions
-// testée.
-//
-// Pour ne pas bloquer le projet sur un bug tiers hors de notre contrôle,
-// cette classe reproduit à la main EXACTEMENT ce que Retrofit aurait généré
-// automatiquement : même signature, mêmes paramètres, même comportement
-// réseau (GET vers /data/2.5/weather avec les query parameters attendus par
-// OpenWeatherMap). L'interface WeatherApiService continue d'utiliser les
-// annotations Retrofit — l'usage de Retrofit demandé par le cahier des
-// charges est donc respecté ; seule l'étape de génération automatique est
-// contournée pour cette classe précise.
-//
-// Si le bug amont est corrigé dans une future version de retrofit_generator,
-// il suffit de supprimer ce fichier, remettre retrofit_generator dans
-// pubspec.yaml, et relancer build_runner pour revenir à la génération 100%
-// automatique.
+// RetrofitGenerator
 // **************************************************************************
 
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main,avoid_redundant_argument_values
+
 class _WeatherApiService implements WeatherApiService {
-  _WeatherApiService(this._dio, {this.baseUrl});
+  _WeatherApiService(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
-  // Conservé pour respecter la signature de l'interface générée par
-  // Retrofit, mais non utilisé : la baseUrl est déjà configurée une seule
-  // fois sur le Dio partagé (voir providers/api_providers.dart).
-  // ignore: unused_field
-  final String? baseUrl;
+  String? baseUrl;
+
+  final ParseErrorLogger? errorLogger;
 
   @override
   Future<WeatherResponse> getCurrentWeather({
@@ -49,17 +27,102 @@ class _WeatherApiService implements WeatherApiService {
     String units = 'metric',
     String lang = 'fr',
   }) async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/data/2.5/weather',
-      queryParameters: {
-        'lat': lat,
-        'lon': lon,
-        'appid': apiKey,
-        'units': units,
-        'lang': lang,
-      },
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'lat': lat,
+      r'lon': lon,
+      r'appid': apiKey,
+      r'units': units,
+      r'lang': lang,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<WeatherResponse>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/data/2.5/weather',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late WeatherResponse _value;
+    try {
+      _value = WeatherResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
 
-    return WeatherResponse.fromJson(response.data!);
+  @override
+  Future<ForecastResponse> getForecast({
+    required double lat,
+    required double lon,
+    required String apiKey,
+    String units = 'metric',
+    String lang = 'fr',
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'lat': lat,
+      r'lon': lon,
+      r'appid': apiKey,
+      r'units': units,
+      r'lang': lang,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ForecastResponse>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/data/2.5/forecast',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ForecastResponse _value;
+    try {
+      _value = ForecastResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
+    if (T != dynamic &&
+        !(requestOptions.responseType == ResponseType.bytes ||
+            requestOptions.responseType == ResponseType.stream)) {
+      if (T == String) {
+        requestOptions.responseType = ResponseType.plain;
+      } else {
+        requestOptions.responseType = ResponseType.json;
+      }
+    }
+    return requestOptions;
+  }
+
+  String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
+    if (baseUrl == null || baseUrl.trim().isEmpty) {
+      return dioBaseUrl;
+    }
+
+    final url = Uri.parse(baseUrl);
+
+    if (url.isAbsolute) {
+      return url.toString();
+    }
+
+    return Uri.parse(dioBaseUrl).resolveUri(url).toString();
   }
 }
+
+// dart format on

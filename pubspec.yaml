@@ -43,9 +43,15 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
 
-  # Génération de code (modèles JSON — voir README pour le client Retrofit)
+  # Génération de code (modèles JSON + client Retrofit).
+  # NOTE : retrofit_generator ^9.x entrait en conflit de versions avec
+  # json_serializable/json_annotation ^4.12.0. La version ^10.2.9 résout
+  # ce conflit — c'est elle qui génère automatiquement
+  # lib/services/weather_api_service.g.dart, plus besoin de l'écrire à la
+  # main comme le suggérait une version antérieure du README.
   build_runner: ^2.4.13
   json_serializable: ^6.8.0
+  retrofit_generator: ^10.2.9
 
 flutter:
   uses-material-design: true

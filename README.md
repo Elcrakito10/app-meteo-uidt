@@ -90,7 +90,7 @@ Cette clé est automatiquement injectée dans `AndroidManifest.xml` au moment du
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-> **Note technique importante** : le client API (`lib/services/weather_api_service.g.dart`) est écrit à la main plutôt que généré automatiquement, en raison d'un bug non résolu dans l'écosystème `retrofit_generator` au moment du développement (voir le commentaire en tête de ce fichier pour le détail). Le comportement est strictement identique à ce que Retrofit aurait généré ; seule l'étape de génération automatique est contournée pour cette classe précise.
+> **Note technique** : une version antérieure de `retrofit_generator` (^9.x) entrait en conflit de dépendances avec `json_serializable`/`json_annotation`, ce qui obligeait à écrire `weather_api_service.g.dart` à la main. Ce n'est plus le cas depuis le passage à `retrofit_generator: ^10.2.9` (voir `pubspec.yaml`) : ce fichier, ainsi que `forecast_response.g.dart` et les autres `*.g.dart`, sont désormais entièrement générés par `build_runner`.
 
 ### 5. Lancer l'application
 ```bash

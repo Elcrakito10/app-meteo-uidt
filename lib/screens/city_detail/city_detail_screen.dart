@@ -4,6 +4,7 @@ import '../../models/city.dart';
 import '../../models/weather_response.dart';
 import '../../theme/app_background.dart';
 import '../../utils/weather_icons.dart';
+import '../hub/weather_hub_screen.dart';
 
 /// Écran détail d'une ville (cahier des charges §7). La section Google Maps
 /// (§8) est volontairement un emplacement réservé propre à ce stade — elle
@@ -96,7 +97,7 @@ class CityDetailScreen extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   mainAxisSpacing: 14,
                   crossAxisSpacing: 14,
-                  childAspectRatio: 1.5,
+                  childAspectRatio: 1.3,
                   children: [
                     _IndicatorCard(
                       icon: Icons.water_drop_outlined,
@@ -189,6 +190,32 @@ class CityDetailScreen extends StatelessWidget {
                 ),
               ),
 
+              const SizedBox(height: 16),
+
+              // Accès à l'expérience étendue (dashboard, carte météo
+              // interactive, prévisions) — écran additif (lib/screens/hub),
+              // qui ne modifie rien du flux ci-dessus.
+              _FadeInUp(
+                delayMs: 250,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => WeatherHubScreen(
+                          initialCity: city,
+                          initialWeather: weather,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.map_rounded),
+                  label: const Text('Explorer la carte météo interactive'),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 24),
             ],
           ),
@@ -216,13 +243,24 @@ class _IndicatorCard extends StatelessWidget {
 
     return GlassCard(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: colors.primary, size: 22),
-          const SizedBox(height: 8),
-          Text(value, style: textTheme.titleMedium),
-          Text(label, style: textTheme.labelLarge),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: textTheme.titleMedium,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            label,
+            style: textTheme.labelLarge,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
