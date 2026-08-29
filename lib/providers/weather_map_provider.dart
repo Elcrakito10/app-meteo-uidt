@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/app_config.dart';
+import '../core/constants.dart';
+import '../models/city_weather_result.dart';
+import 'api_providers.dart';
 
 /// Couches météo proposées sur l'écran Carte météo. Seules les couches
 /// réellement servies par les tuiles gratuites d'OpenWeatherMap sont
@@ -28,13 +31,13 @@ enum WeatherMapLayer {
   /// URL de tuile pour cette couche (template {z}/{x}/{y}).
   String tileUrlTemplate() =>
       '${AppConfig.openWeatherTilesBaseUrl}/$tileCode/{z}/{x}/{y}.png'
-      '?appid=${AppConfig.openWeatherApiKey}';
+          '?appid=${AppConfig.openWeatherApiKey}';
 }
 
 /// Couche actuellement sélectionnée sur la carte (une seule à la fois,
 /// pour rester lisible).
 final selectedMapLayerProvider =
-    StateProvider<WeatherMapLayer>((ref) => WeatherMapLayer.temperature);
+StateProvider<WeatherMapLayer>((ref) => WeatherMapLayer.temperature);
 
 /// Index de l'échéance temporelle sélectionnée dans le curseur, c.-à-d.
 /// quelle entrée de prévision (parmi celles réellement renvoyées par
@@ -43,3 +46,15 @@ final selectedForecastIndexProvider = StateProvider<int>((ref) => 0);
 
 /// Vrai pendant la lecture automatique du curseur temporel.
 final isTimelinePlayingProvider = StateProvider<bool>((ref) => false);
+
+/// Météo ACTUELLE des 5 villes par défaut, utilisée uniquement pour
+/// positionner de vraies flèches de vent sur la carte (jamais un champ de
+/// particules inventé sur toute la zone visible — voir wind_arrow_indicator
+/// .dart pour le principe). Un FutureProvider simple suffit : ces données
+/// sont indépendantes du flux principal (weatherFlowProvider) puisque
+/// l'écran Carte météo est volontairement autonome.
+final mapCitiesWindDataProvider =
+FutureProvider<List<CityWeatherResult>>((ref) async {
+  final repository = ref.watch(weatherRepositoryProvider);
+  return repository.fetchAllWeather(AppConstants.defaultCities);
+});

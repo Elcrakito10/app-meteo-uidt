@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart' as geocoding;
 import '../../core/constants.dart';
 import '../../core/exceptions.dart';
 import '../../models/city.dart';
+import '../../models/city_weather_result.dart';
 import '../../models/weather_response.dart';
 import '../../providers/api_providers.dart';
 import '../../providers/forecast_provider.dart';
@@ -16,6 +17,7 @@ import 'widgets/map_legend.dart';
 import 'widgets/owm_tile_provider.dart';
 import 'widgets/point_weather_card.dart';
 import 'widgets/weather_time_slider.dart';
+import 'widgets/wind_arrow_indicator.dart';
 
 /// Écran "Carte météo interactive". Reçoit une ville de départ (pour
 /// centrer la carte et alimenter le curseur temporel), mais reste
@@ -43,6 +45,31 @@ class _WeatherMapScreenState extends ConsumerState<WeatherMapScreen> {
   bool _isLocating = false;
   String? _locationError;
 
+  // Position écran (pixels logiques) de chaque ville, recalculée à chaque
+  // déplacement de la caméra — nécessaire pour positionner les flèches de
+  // vent (widgets Flutter classiques) par-dessus la carte native.
+  final Map<String, Offset> _cityScreenPositions = {};
+
+  Future<void> _refreshCityScreenPositions() async {
+    final controller = _mapController;
+    if (controller == null || !mounted) return;
+    final dpr = MediaQuery.of(context).devicePixelRatio;
+    final updated = <String, Offset>{};
+    for (final city in AppConstants.defaultCities) {
+      final screenCoord = await controller.getScreenCoordinate(
+        LatLng(city.latitude, city.longitude),
+      );
+      updated[city.name] = Offset(
+        screenCoord.x / dpr,
+        screenCoord.y / dpr,
+      );
+    }
+    if (!mounted) return;
+    setState(() => _cityScreenPositions
+      ..clear()
+      ..addAll(updated));
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedLayer = ref.watch(selectedMapLayerProvider);
@@ -68,7 +95,13 @@ class _WeatherMapScreenState extends ConsumerState<WeatherMapScreen> {
               ),
               zoom: 7,
             ),
-            onMapCreated: (c) => _mapController = c,
+            onMapCreated: (c) {
+              _mapController = c;
+              WidgetsBinding.instance.addPostFrameCallback(
+                    (_) => _refreshCityScreenPositions(),
+              );
+            },
+            onCameraIdle: _refreshCityScreenPositions,
             markers: {
               for (final city in AppConstants.defaultCities)
                 Marker(
@@ -79,19 +112,49 @@ class _WeatherMapScreenState extends ConsumerState<WeatherMapScreen> {
             },
             tileOverlays: selectedLayer.isAvailable
                 ? {
-                    TileOverlay(
-                      tileOverlayId: TileOverlayId(selectedLayer.tileCode),
-                      tileProvider: OwmTileProvider(
-                        urlTemplate: selectedLayer.tileUrlTemplate(),
-                        dio: dio,
-                      ),
-                    ),
-                  }
+              TileOverlay(
+                tileOverlayId: TileOverlayId(selectedLayer.tileCode),
+                tileProvider: OwmTileProvider(
+                  urlTemplate: selectedLayer.tileUrlTemplate(),
+                  dio: dio,
+                ),
+              ),
+            }
                 : {},
             onTap: _onMapTap,
             zoomControlsEnabled: false,
             myLocationButtonEnabled: false,
           ),
+
+          // Flèches de vent réelles, uniquement quand la couche Vent est
+          // active, positionnées sur les 5 villes dont on connaît les vraies
+          // vitesse/direction — jamais un champ de particules inventé.
+          if (selectedLayer == WeatherMapLayer.wind)
+            ref.watch(mapCitiesWindDataProvider).maybeWhen(
+              data: (results) => Stack(
+                children: [
+                  for (final result in results)
+                    if (result is CityWeatherSuccess &&
+                        _cityScreenPositions
+                            .containsKey(result.city.name))
+                      Positioned(
+                        left: _cityScreenPositions[result.city.name]!.dx -
+                            18,
+                        top: _cityScreenPositions[result.city.name]!.dy -
+                            42,
+                        child: IgnorePointer(
+                          child: WindArrowIndicator(
+                            speedMs: result.weather.wind.speed,
+                            directionDegrees:
+                            result.weather.wind.direction,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                ],
+              ),
+              orElse: () => const SizedBox.shrink(),
+            ),
 
           Positioned(
             top: 8,
@@ -175,9 +238,9 @@ class _WeatherMapScreenState extends ConsumerState<WeatherMapScreen> {
                   selectedIndex: selectedIndex,
                   isPlaying: isPlaying,
                   onIndexChanged: (i) =>
-                      ref.read(selectedForecastIndexProvider.notifier).state = i,
+                  ref.read(selectedForecastIndexProvider.notifier).state = i,
                   onPlayingChanged: (v) =>
-                      ref.read(isTimelinePlayingProvider.notifier).state = v,
+                  ref.read(isTimelinePlayingProvider.notifier).state = v,
                 ),
                 loading: () => const SizedBox.shrink(),
                 error: (_, __) => const SizedBox.shrink(),
@@ -273,9 +336,9 @@ class _WeatherMapScreenState extends ConsumerState<WeatherMapScreen> {
           label = (p.locality != null && p.locality!.isNotEmpty)
               ? p.locality
               : ((p.subAdministrativeArea != null &&
-                      p.subAdministrativeArea!.isNotEmpty)
-                  ? p.subAdministrativeArea
-                  : p.administrativeArea);
+              p.subAdministrativeArea!.isNotEmpty)
+              ? p.subAdministrativeArea
+              : p.administrativeArea);
         }
       } catch (_) {
         // Géocodage inverse indisponible : on retombe sur les coordonnées,
