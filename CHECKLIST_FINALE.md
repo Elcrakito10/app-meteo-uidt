@@ -72,50 +72,49 @@ APK généré dans : `build/app/outputs/flutter-apk/app-release.apk`
 ## 6. Checklist de vérification fonctionnelle (à faire tous les deux, ensemble)
 
 ### Flux principal (P1)
-- [ ] Accueil : animation d'entrée en cascade visible, toggle thème fonctionne
-- [ ] Chargement : jauge progresse par paliers réels (pas un minuteur fixe), messages changent
-- [ ] Les 5 villes se chargent avec de vraies données
-- [ ] Résultats : cartes tapables, tri, retry individuel sur une ville en échec
-- [ ] Détail ville : toutes les infos + mini-carte Google Maps avec marqueur correct
-- [ ] Bouton "Recommencer" relance tout le flux depuis zéro
-- [ ] Bouton retour accueil fonctionne à tout moment
+- [x] Accueil : animation d'entrée en cascade visible, toggle thème fonctionne
+- [x] Chargement : jauge progresse par paliers réels (pas un minuteur fixe), messages changent
+- [x] Les 5 villes se chargent avec de vraies données
+- [x] Résultats : cartes tapables, tri, retry individuel sur une ville en échec
+- [x] Détail ville : toutes les infos + mini-carte Google Maps avec marqueur correct
+- [x] Bouton "Recommencer" relance tout le flux depuis zéro
+- [x] Bouton retour accueil fonctionne à tout moment
 
 ### Gestion d'erreurs
-- [ ] Couper le réseau → message "Pas de connexion" propre, pas de crash
-- [ ] Réessayer après reconnexion → recharge correctement
-- [ ] Clé API invalide (test ponctuel) → message clair, pas de crash
+- [x] Couper le réseau → message "Pas de connexion" propre, pas de crash
+- [x] Réessayer après reconnexion → recharge correctement
+- [x] Clé API invalide (test ponctuel) → message clair, pas de crash
 
 ### Thème
-- [ ] Mode clair : ciel pastel + cartes en verre clair, tout lisible
-- [ ] Mode sombre : orage + cartes en verre sombre, tout lisible
-- [ ] Transition entre les deux animée (fondu), pas de flash brutal
+- [x] Mode clair : ciel pastel + cartes en verre clair, tout lisible
+- [x] Mode sombre : orage + cartes en verre sombre, tout lisible
+- [x] Transition entre les deux animée (fondu), pas de flash brutal
 
 ### Carte météo interactive (P2)
-- [ ] Les 4 couches (température, vent, précipitations, pression) affichent une vraie tuile colorée
-- [ ] Flèches de vent visibles sur les 5 villes en couche "Vent", avec vraies valeurs
-- [ ] Légende change selon la couche sélectionnée
-- [ ] Curseur temporel : le panneau d'info change avec de vraies données de prévision (l'image de la carte reste volontairement figée sur "maintenant" — comportement documenté, pas un bug)
-- [ ] Recherche de ville fonctionne
-- [ ] Bouton localisation demande la permission proprement
+- [x] Les 4 couches (température, vent, précipitations, pression) affichent une vraie tuile colorée
+- [x] Flèches de vent visibles sur les 5 villes en couche "Vent", avec vraies valeurs
+- [x] Légende change selon la couche sélectionnée
+- [x] Curseur temporel : le panneau d'info change avec de vraies données de prévision (l'image de la carte reste volontairement figée sur "maintenant" — comportement documenté, pas un bug)
+- [x] Recherche de ville fonctionne
+- [x] Bouton localisation demande la permission proprement
 
 ### Dashboard / Prévisions
-- [ ] Prévisions horaires et sur 6 jours affichent de vraies données
-- [ ] Aucun débordement visuel (RenderFlex overflow) sur aucun écran
+- [x] Prévisions horaires et sur 6 jours affichent de vraies données
+- [x] Aucun débordement visuel (RenderFlex overflow) sur aucun écran
 
 ## 7. Étapes GitHub avant remise
 
-- [ ] Tous les commits des deux membres sont bien poussés sur `main`
-- [ ] `git log --oneline` montre une contribution claire des deux personnes
-- [ ] `.env` et `android/local.properties` sont absents du repository (vérifié sur github.com)
-- [ ] README.md à jour, avec les deux noms
-- [ ] Le dépôt est accessible (Private + collaborateurs, ou Public selon consigne du professeur)
+- [x] Tous les commits des deux membres sont bien poussés sur `main`
+- [x] `git log --oneline` montre une contribution claire des deux personnes
+- [x] `.env` et `android/local.properties` sont absents du repository (vérifié sur github.com)
+- [x] README.md à jour, avec les deux noms
+- [x] Le dépôt est accessible (Private + collaborateurs, ou Public selon consigne du professeur)
 
 ## 8. Derniers réglages de qualité (optionnels mais recommandés)
 
-- [ ] Supprimer tout fichier parasite (ex. `desktop.ini` s'il réapparaît)
-- [ ] Vérifier qu'aucun `debugPrint` de diagnostic ne pollue excessivement la console en usage normal (les logs actuels sont utiles pour la démo/débogage, à garder ou retirer selon préférence — ils n'affectent pas le fonctionnement)
-- [ ] Relire une dernière fois `README.md` pour l'orthographe et la clarté
+- [x] Supprimer tout fichier parasite (ex. `desktop.ini` s'il réapparaît)
+- [x] Vérifier qu'aucun `debugPrint` de diagnostic ne pollue excessivement la console en usage normal (les logs actuels sont utiles pour la démo/débogage, à garder ou retirer selon préférence — ils n'affectent pas le fonctionnement)
+- [x] Relire une dernière fois `README.md` pour l'orthographe et la clarté
 
 ---
 
-**Une fois cette checklist entièrement cochée, le projet est prêt pour la remise.**
