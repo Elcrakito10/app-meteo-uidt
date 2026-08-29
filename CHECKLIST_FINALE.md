@@ -47,10 +47,10 @@ app_meteo/
 
 ## 3. Configurations nécessaires avant de lancer le projet
 
-- [ ] `.env` créé à la racine (copie de `.env.example`) avec une vraie clé OpenWeatherMap
-- [ ] `android/local.properties` contient `MAPS_API_KEY=...` (clé Google Maps, API "Maps SDK for Android" activée sur Google Cloud)
-- [ ] `android/app/build.gradle.kts` : `compileSdk = 36`, `targetSdk = 36`, lecture de `local.properties` pour `manifestPlaceholders["MAPS_API_KEY"]`
-- [ ] `AndroidManifest.xml` : balise `<meta-data android:name="com.google.android.geo.API_KEY" android:value="${MAPS_API_KEY}" />`
+- [x] `.env` créé à la racine (copie de `.env.example`) avec une vraie clé OpenWeatherMap
+- [x] `android/local.properties` contient `MAPS_API_KEY=...` (clé Google Maps, API "Maps SDK for Android" activée sur Google Cloud)
+- [x] `android/app/build.gradle.kts` : `compileSdk = 36`, `targetSdk = 36`, lecture de `local.properties` pour `manifestPlaceholders["MAPS_API_KEY"]`
+- [x] `AndroidManifest.xml` : balise `<meta-data android:name="com.google.android.geo.API_KEY" android:value="${MAPS_API_KEY}" />`
 
 ## 4. Commandes de lancement
 
