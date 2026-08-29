@@ -90,14 +90,22 @@ class _DayRow extends StatelessWidget {
           Icon(WeatherIcons.fromCode(day.condition.icon),
               size: 20, color: colors.secondary),
           const SizedBox(width: 8),
-          if (day.maxPop > 0.1)
-            Row(
-              children: [
-                Icon(Icons.water_drop_rounded, size: 12, color: colors.primary),
-                Text('${(day.maxPop * 100).round()}%', style: textTheme.labelSmall),
-                const SizedBox(width: 8),
-              ],
-            ),
+          Row(
+            children: [
+              Icon(Icons.water_drop_rounded,
+                  size: 12,
+                  color: day.maxPop > 0.1
+                      ? colors.primary
+                      : colors.onSurface.withValues(alpha: 0.35)),
+              Text('${(day.maxPop * 100).round()}%',
+                  style: textTheme.labelSmall?.copyWith(
+                    color: day.maxPop > 0.1
+                        ? null
+                        : colors.onSurface.withValues(alpha: 0.5),
+                  )),
+              const SizedBox(width: 8),
+            ],
+          ),
           const Spacer(),
           SizedBox(
             width: 40,

@@ -32,7 +32,7 @@ class HourlyForecastList extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 110,
+          height: 122,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: entries.length.clamp(0, 16),
@@ -40,17 +40,23 @@ class HourlyForecastList extends StatelessWidget {
             itemBuilder: (context, index) {
               final entry = entries[index];
               return GlassCard(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 borderRadius: 16,
                 child: SizedBox(
                   width: 62,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        index == 0 ? 'Maintenant' : DateFormatFr.hour(entry.dateTime),
-                        style: textTheme.labelMedium,
-                        textAlign: TextAlign.center,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          index == 0
+                              ? 'Maintenant'
+                              : DateFormatFr.hour(entry.dateTime),
+                          style: textTheme.labelMedium,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                        ),
                       ),
                       Icon(
                         WeatherIcons.fromCode(entry.primaryCondition.icon),

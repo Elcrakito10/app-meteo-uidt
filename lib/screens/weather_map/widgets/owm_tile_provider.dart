@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dio/dio.dart';
 
@@ -25,11 +26,19 @@ class OwmTileProvider implements TileProvider {
         options: Options(responseType: ResponseType.bytes),
       );
       final bytes = Uint8List.fromList(response.data ?? const []);
-      if (bytes.isEmpty) return TileProvider.noTile;
+      if (bytes.isEmpty) {
+        debugPrint('=== TUILE MÉTÉO VIDE === url=$url');
+        return TileProvider.noTile;
+      }
       return Tile(256, 256, bytes);
-    } catch (_) {
-      // Tuile manquante ou erreur réseau ponctuelle : ne pas faire planter
-      // la carte, simplement ne pas afficher cette tuile précise.
+    } catch (e) {
+      // Affiché en debug pour diagnostiquer précisément la cause réelle
+      // (clé invalide, réseau, mauvais domaine...) plutôt que d'échouer
+      // silencieusement sans aucune trace exploitable.
+      debugPrint('=== ERREUR TUILE MÉTÉO ===');
+      debugPrint('URL: $url');
+      debugPrint('Erreur: $e');
+      debugPrint('===========================');
       return TileProvider.noTile;
     }
   }
